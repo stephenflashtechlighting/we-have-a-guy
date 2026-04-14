@@ -1,4 +1,4 @@
-const CACHE = "whag-v1";
+const CACHE = "whag-v2";
 const ASSETS = [
   "/we-have-a-guy/",
   "/we-have-a-guy/index.html",

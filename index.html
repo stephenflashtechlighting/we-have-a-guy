@@ -725,7 +725,7 @@ function buildFilterBar() {
   const cats = getCategories();
   const bar = document.getElementById('filterBar');
   bar.innerHTML = `<button class="filter-chip${activeFilter==='All'?' active':''}" onclick="setFilter('All',this)">All</button>` +
-    cats.map(c => `<button class="filter-chip${activeFilter===c?' active':''}" onclick="setFilter(${JSON.stringify(c)},this)">${c}</button>`).join('');
+    cats.map(c => `<button class="filter-chip${activeFilter===c?' active':''}" onclick="setFilter('${escJsArg(c)}',this)">${c}</button>`).join('');
 }
 
 function setFilter(cat, el) {
@@ -755,7 +755,7 @@ function renderAll() {
 
     html += `
       <div class="category-section" id="sec_${encodeId(cat)}">
-        <div class="category-header" onclick="toggleSection(${JSON.stringify(cat)})">
+        <div class="category-header" onclick="toggleSection('${escJsArg(cat)}')">
           <span class="category-title">${cat}</span>
           <span class="category-count">${items.length}</span>
           <span class="category-line"></span>
@@ -777,6 +777,14 @@ function renderAll() {
     ${q ? `<span class="stat-pill">Showing <strong>${totalShown}</strong></span>` : ''}`;
 }
 
+function escJsArg(str) {
+  return String(str ?? '')
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\r/g, '')
+    .replace(/\n/g, '\\n');
+}
+
 function encodeId(str) {
   return str.replace(/[^a-zA-Z0-9]/g, '_');
 }
@@ -790,8 +798,8 @@ function renderCard(c) {
   return `
     <div class="contact-card">
       <div class="card-actions">
-        <button class="btn-icon" onclick="openModal(${JSON.stringify(c.id)})" title="Edit">✏️</button>
-        <button class="btn-icon del" onclick="askDelete(${JSON.stringify(c.id)})" title="Delete">🗑</button>
+        <button class="btn-icon" onclick="openModal('${escJsArg(c.id)}')" title="Edit">✏️</button>
+        <button class="btn-icon del" onclick="askDelete('${escJsArg(c.id)}')" title="Delete">🗑</button>
       </div>
       <div class="card-name">${c.name}</div>
       ${phone}${email}${addr}${notes}
@@ -826,7 +834,7 @@ function handleCategoryChange() {
 function openModal(id) {
   editingId = id != null ? id : null;
   document.getElementById('modalTitle').textContent = id != null ? 'Edit Contact' : 'Add Contact';
-  const c = id != null ? contacts.find(x => x.id == id) : null;
+  const c = id != null ? contacts.find(x => x.id === id) : null;
   populateCategorySelect(c ? c.category : '');
   document.getElementById('f_name').value    = c ? c.name    : '';
   document.getElementById('f_phone').value   = c ? c.phone   : '';
@@ -892,7 +900,7 @@ async function saveContact() {
 // ─── DELETE ──────────────────────────────────────────────────────────────────
 function askDelete(id) {
   deletingId = id;
-  const c = contacts.find(x => x.id == id);
+  const c = contacts.find(x => x.id === id);
   document.getElementById('confirmText').textContent = `Remove "${c.name}" from the directory?`;
   document.getElementById('confirmOverlay').classList.add('open');
 }
