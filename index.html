@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>We Have A Guy 📋</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5f0e8;
+    --warm-white: #faf8f3;
+    --ink: #1a1610;
+    --brown: #5c3d2e;
+    --gold: #c8973a;
+    --gold-light: #e8c46a;
+    --rust: #b85c38;
+    --sage: #6b7c5c;
+    --card-bg: #ffffff;
+    --border: #ddd5c4;
+    --shadow: rgba(92,61,46,0.12);
+    --tag-bg: #f0e8d8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    background: var(--ink);
+    padding: 28px 32px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.35);
+  }
+
+  .header-left h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--gold-light);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .header-left p {
+    color: #a89880;
+    font-size: 0.82rem;
+    font-weight: 300;
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .header-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .search-wrap {
+    position: relative;
+  }
+
+  .search-wrap input {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(200,151,58,0.35);
+    color: #f5f0e8;
+    padding: 9px 16px 9px 38px;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    font-family: 'Source Sans 3', sans-serif;
+    width: 220px;
+    transition: border-color 0.2s, background 0.2s;
+    outline: none;
+  }
+
+  .search-wrap input::placeholder { color: #7a6a58; }
+  .search-wrap input:focus {
+    border-color: var(--gold);
+    background: rgba(255,255,255,0.12);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #7a6a58;
+    font-size: 14px;
+    pointer-events: none;
+  }
+
+  .btn-add {
+    background: var(--gold);
+    color: var(--ink);
+    border: none;
+    padding: 9px 18px;
+    border-radius: 6px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.1s;
+    white-space: nowrap;
+  }
+
+  .btn-add:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-add:active { transform: translateY(0); }
+
+  .btn-export {
+    background: transparent;
+    color: #a89880;
+    border: 1px solid rgba(200,151,58,0.3);
+    padding: 9px 14px;
+    border-radius: 6px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+
+  .btn-export:hover { color: var(--gold-light); border-color: var(--gold); }
+
+  /* ─── CATEGORY FILTER BAR ─── */
+  .filter-bar {
+    padding: 14px 32px;
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #8a7a6a;
+    font-weight: 600;
+    margin-right: 4px;
+  }
+
+  .filter-chip {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: white;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Source Sans 3', sans-serif;
+    color: #5a4a3a;
+  }
+
+  .filter-chip:hover { border-color: var(--gold); color: var(--brown); }
+  .filter-chip.active { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 600; }
+
+  /* ─── MAIN CONTENT ─── */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    font-size: 0.82rem;
+    color: #8a7a6a;
+  }
+
+  .stat-pill {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+  }
+
+  .stat-pill strong { color: var(--brown); }
+
+  /* ─── CATEGORY SECTION ─── */
+  .category-section {
+    margin-bottom: 32px;
+  }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .category-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--brown);
+    font-weight: 700;
+  }
+
+  .category-count {
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2px 9px;
+    font-size: 0.75rem;
+    color: #7a6a58;
+    font-weight: 600;
+  }
+
+  .category-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .collapse-icon {
+    color: #a89880;
+    font-size: 0.75rem;
+    transition: transform 0.2s;
+  }
+
+  .collapsed .collapse-icon { transform: rotate(-90deg); }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+
+  .cards-grid.hidden { display: none; }
+
+  /* ─── CONTACT CARD ─── */
+  .contact-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    transition: box-shadow 0.18s, transform 0.15s;
+    position: relative;
+  }
+
+  .contact-card:hover {
+    box-shadow: 0 4px 18px var(--shadow);
+    transform: translateY(-2px);
+  }
+
+  .card-name {
+    font-weight: 600;
+    font-size: 0.97rem;
+    color: var(--ink);
+    margin-bottom: 6px;
+    padding-right: 48px;
+    line-height: 1.35;
+  }
+
+  .card-detail {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    font-size: 0.82rem;
+    color: #6a5a4a;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  .card-detail .icon {
+    width: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: var(--gold);
+  }
+
+  .card-detail a {
+    color: var(--rust);
+    text-decoration: none;
+  }
+
+  .card-detail a:hover { text-decoration: underline; }
+
+  .card-phone { font-family: 'Source Sans 3', sans-serif; }
+
+  .card-notes {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+    font-size: 0.78rem;
+    color: #8a7a6a;
+    font-style: italic;
+    line-height: 1.45;
+  }
+
+  .card-actions {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .contact-card:hover .card-actions { opacity: 1; }
+
+  .btn-icon {
+    background: none;
+    border: 1px solid var(--border);
+    width: 28px;
+    height: 28px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.15s;
+    color: #7a6a58;
+  }
+
+  .btn-icon:hover { border-color: var(--gold); color: var(--brown); background: var(--tag-bg); }
+  .btn-icon.del:hover { border-color: #e05a40; color: #e05a40; background: #fff5f3; }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #a89880;
+  }
+
+  .empty-state .big-icon { font-size: 3rem; margin-bottom: 12px; }
+  .empty-state p { font-size: 0.95rem; }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,22,16,0.65);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(3px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--warm-white);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    animation: modalIn 0.22s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--brown);
+  }
+
+  .btn-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #a89880;
+    padding: 4px;
+    transition: color 0.15s;
+  }
+
+  .btn-close:hover { color: var(--ink); }
+
+  .modal-body {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .form-group label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #8a7a6a;
+    font-weight: 600;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 9px 12px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.9rem;
+    color: var(--ink);
+    background: white;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(200,151,58,0.12); }
+
+  .form-group textarea { resize: vertical; min-height: 70px; }
+
+  .new-category-row {
+    display: none;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .new-category-row.visible { display: flex; }
+  .new-category-row input { flex: 1; }
+
+  .modal-footer {
+    padding: 14px 24px 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn-cancel {
+    background: none;
+    border: 1px solid var(--border);
+    padding: 9px 18px;
+    border-radius: 6px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.88rem;
+    cursor: pointer;
+    color: #6a5a4a;
+    transition: all 0.15s;
+  }
+
+  .btn-cancel:hover { background: var(--tag-bg); }
+
+  .btn-save {
+    background: var(--gold);
+    color: var(--ink);
+    border: none;
+    padding: 9px 22px;
+    border-radius: 6px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: background 0.18s;
+  }
+
+  .btn-save:hover { background: var(--gold-light); }
+
+  /* ─── CONFIRM DIALOG ─── */
+  .confirm-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,22,16,0.7);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .confirm-overlay.open { display: flex; }
+
+  .confirm-box {
+    background: white;
+    border-radius: 10px;
+    padding: 24px;
+    max-width: 340px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  }
+
+  .confirm-box h3 { font-family: 'Playfair Display', serif; color: var(--brown); margin-bottom: 8px; }
+  .confirm-box p { font-size: 0.88rem; color: #6a5a4a; margin-bottom: 18px; }
+  .confirm-btns { display: flex; gap: 10px; justify-content: center; }
+  .btn-confirm-del { background: #e05a40; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-family: 'Source Sans 3', sans-serif; font-weight: 600; }
+  .btn-confirm-del:hover { background: #c04030; }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: var(--ink);
+    color: var(--gold-light);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    z-index: 400;
+    transition: transform 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 600px) {
+    header { padding: 16px; }
+    .header-left h1 { font-size: 1.5rem; }
+    main { padding: 16px; }
+    .filter-bar { padding: 10px 16px; }
+    .form-row { grid-template-columns: 1fr; }
+    .search-wrap input { width: 160px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>📋 We Have A Guy</h1>
+    <p>The family contact directory</p>
+  </div>
+  <div class="header-right">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search names, notes…" oninput="renderAll()">
+    </div>
+    <button class="btn-export" onclick="exportJSON()" title="Export data">⬇ Export</button>
+    <button class="btn-add" onclick="openModal()">＋ Add Contact</button>
+  </div>
+</header>
+
+<div class="filter-bar">
+  <span class="filter-label">Filter:</span>
+  <button class="filter-chip active" onclick="setFilter('All', this)">All</button>
+  <div id="filterChips"></div>
+</div>
+
+<main>
+  <div class="stats-row" id="statsRow"></div>
+  <div id="directory"></div>
+  <div class="empty-state" id="emptyState" style="display:none">
+    <div class="big-icon">🔎</div>
+    <p>No contacts match your search.</p>
+  </div>
+</main>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Add New Contact</span>
+      <button class="btn-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group" style="grid-column:1/-1">
+          <label>Name *</label>
+          <input type="text" id="f_name" placeholder="Full name or business name">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Category *</label>
+        <select id="f_category" onchange="handleCategoryChange()">
+          <option value="">— Select —</option>
+        </select>
+      </div>
+      <div class="new-category-row" id="newCatRow">
+        <input type="text" id="f_newcat" placeholder="New category name">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" id="f_phone" placeholder="504-000-0000">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="f_email" placeholder="email@example.com">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Address</label>
+        <input type="text" id="f_address" placeholder="Street address">
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea id="f_notes" placeholder="Pricing, tips, recommendations…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveContact()">Save Contact</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3>Remove Contact?</h3>
+    <p id="confirmText">Are you sure you want to remove this contact?</p>
+    <div class="confirm-btns">
+      <button class="btn-cancel" onclick="closeConfirm()">Keep</button>
+      <button class="btn-confirm-del" onclick="confirmDelete()">Remove</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+let contacts = JSON.parse(localStorage.getItem('whag_contacts') || 'null') || [
+  { id:1,  category:"AC",                        name:"Taylor Teebe",                              phone:"504-390-3333",           email:"",                                   address:"",                                      notes:"" },
+  { id:2,  category:"Alterations/Tailor",         name:"Van's",                                     phone:"",                      email:"",                                   address:"215 N Carrollton Ave, New Orleans, LA 70119", notes:"" },
+  { id:3,  category:"Alterations/Tailor",         name:"All About Eve",                             phone:"504-249-5974",           email:"",                                   address:"4401 Veterans",                         notes:"" },
+  { id:4,  category:"Appliance Repair",           name:"Eduardo",                                   phone:"504-710-3300",           email:"",                                   address:"",                                      notes:"" },
+  { id:5,  category:"Beekeeper",                  name:"Jason",                                     phone:"+1 (504) 858-7258",     email:"",                                   address:"",                                      notes:"" },
+  { id:6,  category:"Brick Layers/Masonry",       name:"Tracy Deruise",                             phone:"504-616-3531",           email:"",                                   address:"",                                      notes:"" },
+  { id:7,  category:"Brick Layers/Masonry",       name:"Ronnie McIntyre",                           phone:"504-913-8008",           email:"",                                   address:"",                                      notes:"" },
+  { id:8,  category:"Brick Layers/Masonry",       name:"Darren Green",                              phone:"504-319-5950",           email:"",                                   address:"",                                      notes:"" },
+  { id:9,  category:"Brick Layers/Masonry",       name:"Bernard Smutten",                           phone:"504-235-4240",           email:"",                                   address:"",                                      notes:"" },
+  { id:10, category:"Car Detail",                 name:"Sherrod",                                   phone:"757-338-8755",           email:"",                                   address:"",                                      notes:"" },
+  { id:11, category:"Car Repair",                 name:"Francisco's Auto Motor Repair",             phone:"504-756-7761",           email:"",                                   address:"4712 Trenton St, Metairie, LA 70006",   notes:"" },
+  { id:12, category:"Carpet Cleaning",            name:"Marty Bordelon (Pyramid Cleaning)",         phone:"504-469-5025",           email:"",                                   address:"",                                      notes:"" },
+  { id:13, category:"Carpet Stretching",          name:"Larry Decures",                             phone:"504-905-9865",           email:"",                                   address:"",                                      notes:"" },
+  { id:14, category:"Cement/Concrete",            name:"Harrison Concrete",                         phone:"985-788-1166",           email:"",                                   address:"",                                      notes:"Leggari Products for reseal" },
+  { id:15, category:"Debris Removal",             name:"Christian Taylor (The Debris Guy)",         phone:"504-301-5052",           email:"Christian@TheDebrisGuy.com",         address:"",                                      notes:"Crawl space, gutters, vegetation removal" },
+  { id:16, category:"Dentist/Oral Surgeon",       name:"Dr. Brian LeBon",                           phone:"",                      email:"",                                   address:"",                                      notes:"" },
+  { id:17, category:"Dentist/Oral Surgeon",       name:"Dr. Jackson (Oral Surgeon)",                phone:"504-455-7161",           email:"",                                   address:"",                                      notes:"" },
+  { id:18, category:"DJ",                         name:"Wayne Trepagnier",                          phone:"504-610-5987",           email:"blueprintstudioneworleans@gmail.com", address:"",                                      notes:"$350" },
+  { id:19, category:"Dozer Work",                 name:"Jessie",                                    phone:"985-231-8087",           email:"",                                   address:"",                                      notes:"" },
+  { id:20, category:"Electrician",                name:"John Grilot",                               phone:"504-415-5183",           email:"",                                   address:"",                                      notes:"" },
+  { id:21, category:"Firewood",                   name:"Mike",                                      phone:"985-351-7709",           email:"",                                   address:"",                                      notes:"" },
+  { id:22, category:"Fortified Roof Evaluator",   name:"Mark Orgeron (21st Century Home Inspections)", phone:"504-494-2418",        email:"nspctrone@gmail.com",                address:"",                                      notes:"" },
+  { id:23, category:"Gutters",                    name:"Alpha Gutters",                             phone:"504-343-2401",           email:"",                                   address:"",                                      notes:"" },
+  { id:24, category:"Handyman",                   name:"Larry Laughlin (Laughlin Handyman Service)",phone:"504-460-6581",           email:"Lawrencelaughlin@gmail.com",          address:"",                                      notes:"" },
+  { id:25, category:"Handyman/Lawn/Haul",         name:"Breedlove Property Services (EJ)",          phone:"+1 (504) 450-9311",     email:"",                                   address:"",                                      notes:"" },
+  { id:26, category:"Home Cleaning",              name:"JBO Cleaning Services",                     phone:"504-451-3077",           email:"JBOcleaningservices@gmail.com",       address:"",                                      notes:"" },
+  { id:27, category:"Home Cleaning",              name:"Ingrid Cleaning Solution (Ingrid Sorto)",   phone:"504-249-0249",           email:"",                                   address:"",                                      notes:"" },
+  { id:28, category:"Home Cleaning",              name:"Katty Cleaning",                            phone:"",                      email:"",                                   address:"",                                      notes:"" },
+  { id:29, category:"House Painting",             name:"Alejandro",                                 phone:"+1 (504) 662-6264",     email:"",                                   address:"",                                      notes:"" },
+  { id:30, category:"Painter",                    name:"Mark Yenchko",                              phone:"713-628-4464",           email:"",                                   address:"",                                      notes:"Stephen has a painter too" },
+  { id:31, category:"Pine Mulch",                 name:"Gomez",                                     phone:"985-264-3567",           email:"",                                   address:"",                                      notes:"" },
+  { id:32, category:"Plumber",                    name:"Monty",                                     phone:"",                      email:"",                                   address:"",                                      notes:"" },
+  { id:33, category:"Plumber",                    name:"Casey Sutton",                              phone:"504-495-3333",           email:"",                                   address:"",                                      notes:"" },
+  { id:34, category:"Plumber",                    name:"Pipe Boss Plumbing (Derrick)",               phone:"504-877-2726",           email:"",                                   address:"",                                      notes:"" },
+  { id:35, category:"Power Washing",              name:"Hydromax (Dave Fullmer)",                   phone:"504-463-4185",           email:"",                                   address:"",                                      notes:"" },
+  { id:36, category:"Roofing",                    name:"Chris Pfeffer",                             phone:"504-251-4979 / 504-473-6822", email:"",                            address:"",                                      notes:"" },
+  { id:37, category:"Roofing",                    name:"David Morel",                               phone:"504-417-8276",           email:"",                                   address:"",                                      notes:"" },
+  { id:38, category:"Sheetrock",                  name:"Mike Calico",                               phone:"504-616-6826",           email:"",                                   address:"",                                      notes:"" },
+  { id:39, category:"Tree Trim/Firewood",         name:"Daniel Benoit",                             phone:"504-491-5304",           email:"",                                   address:"",                                      notes:"" },
+  { id:40, category:"Tree Trim/Firewood",         name:"David Folse",                               phone:"504-274-6963",           email:"",                                   address:"",                                      notes:"" },
+  { id:41, category:"Door Refinisher",            name:"Rachel Osborn (Knot & Wood)",               phone:"504-450-6680",           email:"rachel@knotandwood.co",              address:"",                                      notes:"" },
+  { id:42, category:"Washer/Dryer Buy & Sell",    name:"Tony Centanni",                             phone:"505-430-0141",           email:"",                                   address:"814 Green Acres Rd, Metairie, LA 70003", notes:"" },
+  { id:43, category:"Wedding Assistant",          name:"Anna",                                      phone:"+1 (985) 974-9816",     email:"",                                   address:"",                                      notes:"" },
+];
+
+let nextId = Math.max(...contacts.map(c => c.id)) + 1;
+let activeFilter = 'All';
+let editingId = null;
+let deletingId = null;
+
+function save() {
+  localStorage.setItem('whag_contacts', JSON.stringify(contacts));
+}
+
+// ─── CATEGORIES ─────────────────────────────────────────────────────────────
+function getCategories() {
+  return [...new Set(contacts.map(c => c.category))].sort();
+}
+
+function buildFilterChips() {
+  const cats = getCategories();
+  const wrap = document.getElementById('filterChips');
+  wrap.innerHTML = cats.map(c =>
+    `<button class="filter-chip${activeFilter===c?' active':''}" onclick="setFilter('${c.replace(/'/g,"\\'")}', this)">${c}</button>`
+  ).join('');
+}
+
+function setFilter(cat, el) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function renderAll() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const dir = document.getElementById('directory');
+  const empty = document.getElementById('emptyState');
+  const stats = document.getElementById('statsRow');
+
+  buildFilterChips();
+
+  const cats = getCategories();
+  let totalShown = 0;
+  let html = '';
+
+  for (const cat of cats) {
+    if (activeFilter !== 'All' && activeFilter !== cat) continue;
+
+    let items = contacts.filter(c => c.category === cat);
+    if (q) {
+      items = items.filter(c =>
+        c.name.toLowerCase().includes(q) ||
+        c.phone.toLowerCase().includes(q) ||
+        c.email.toLowerCase().includes(q) ||
+        c.notes.toLowerCase().includes(q) ||
+        c.address.toLowerCase().includes(q)
+      );
+    }
+    if (!items.length) continue;
+    totalShown += items.length;
+
+    html += `
+      <div class="category-section" id="sec_${CSS.escape(cat)}">
+        <div class="category-header" onclick="toggleSection('${cat.replace(/'/g,"\\'")}')">
+          <span class="category-title">${cat}</span>
+          <span class="category-count">${items.length}</span>
+          <span class="category-line"></span>
+          <span class="collapse-icon">▼</span>
+        </div>
+        <div class="cards-grid" id="grid_${CSS.escape(cat)}">
+          ${items.map(c => renderCard(c)).join('')}
+        </div>
+      </div>`;
+  }
+
+  dir.innerHTML = html;
+  empty.style.display = totalShown ? 'none' : 'block';
+
+  const total = contacts.length;
+  const catCount = getCategories().length;
+  stats.innerHTML = `
+    <span class="stat-pill"><strong>${total}</strong> contacts</span>
+    <span class="stat-pill"><strong>${catCount}</strong> categories</span>
+    ${q ? `<span class="stat-pill">Showing <strong>${totalShown}</strong> results</span>` : ''}
+  `;
+}
+
+function renderCard(c) {
+  const phone = c.phone ? `<div class="card-detail"><span class="icon">📞</span><span class="card-phone"><a href="tel:${c.phone}">${c.phone}</a></span></div>` : '';
+  const email = c.email ? `<div class="card-detail"><span class="icon">✉️</span><a href="mailto:${c.email}">${c.email}</a></div>` : '';
+  const addr  = c.address ? `<div class="card-detail"><span class="icon">📍</span><span>${c.address}</span></div>` : '';
+  const notes = c.notes ? `<div class="card-notes">💬 ${c.notes}</div>` : '';
+
+  return `
+    <div class="contact-card">
+      <div class="card-actions">
+        <button class="btn-icon" onclick="openModal(${c.id})" title="Edit">✏️</button>
+        <button class="btn-icon del" onclick="askDelete(${c.id})" title="Delete">🗑</button>
+      </div>
+      <div class="card-name">${c.name}</div>
+      ${phone}${email}${addr}${notes}
+    </div>`;
+}
+
+function toggleSection(cat) {
+  const sec = document.getElementById('sec_' + CSS.escape(cat));
+  const grid = document.getElementById('grid_' + CSS.escape(cat));
+  sec.classList.toggle('collapsed');
+  grid.classList.toggle('hidden');
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+function populateCategorySelect(selected) {
+  const sel = document.getElementById('f_category');
+  const cats = getCategories();
+  sel.innerHTML = `<option value="">— Select —</option>` +
+    cats.map(c => `<option value="${c}"${c===selected?' selected':''}>${c}</option>`).join('') +
+    `<option value="__new__">＋ New category…</option>`;
+}
+
+function handleCategoryChange() {
+  const val = document.getElementById('f_category').value;
+  const row = document.getElementById('newCatRow');
+  row.classList.toggle('visible', val === '__new__');
+  if (val === '__new__') document.getElementById('f_newcat').focus();
+}
+
+function openModal(id) {
+  editingId = id || null;
+  document.getElementById('modalTitle').textContent = id ? 'Edit Contact' : 'Add New Contact';
+
+  const c = id ? contacts.find(x => x.id === id) : null;
+  populateCategorySelect(c ? c.category : '');
+
+  document.getElementById('f_name').value    = c ? c.name    : '';
+  document.getElementById('f_phone').value   = c ? c.phone   : '';
+  document.getElementById('f_email').value   = c ? c.email   : '';
+  document.getElementById('f_address').value = c ? c.address : '';
+  document.getElementById('f_notes').value   = c ? c.notes   : '';
+  document.getElementById('f_newcat').value  = '';
+  document.getElementById('newCatRow').classList.remove('visible');
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('f_name').focus();
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  editingId = null;
+}
+
+function saveContact() {
+  const name = document.getElementById('f_name').value.trim();
+  let cat = document.getElementById('f_category').value;
+  if (cat === '__new__') cat = document.getElementById('f_newcat').value.trim();
+
+  if (!name) { alert('Name is required.'); return; }
+  if (!cat) { alert('Category is required.'); return; }
+
+  const data = {
+    name, category: cat,
+    phone:   document.getElementById('f_phone').value.trim(),
+    email:   document.getElementById('f_email').value.trim(),
+    address: document.getElementById('f_address').value.trim(),
+    notes:   document.getElementById('f_notes').value.trim(),
+  };
+
+  if (editingId) {
+    const idx = contacts.findIndex(c => c.id === editingId);
+    contacts[idx] = { ...contacts[idx], ...data };
+    showToast('Contact updated ✓');
+  } else {
+    contacts.push({ id: nextId++, ...data });
+    showToast('Contact added ✓');
+  }
+
+  save();
+  closeModal();
+  renderAll();
+}
+
+// ─── DELETE ──────────────────────────────────────────────────────────────────
+function askDelete(id) {
+  deletingId = id;
+  const c = contacts.find(x => x.id === id);
+  document.getElementById('confirmText').textContent = `Remove "${c.name}" from the directory?`;
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+
+function closeConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('open');
+  deletingId = null;
+}
+
+function confirmDelete() {
+  contacts = contacts.filter(c => c.id !== deletingId);
+  save();
+  closeConfirm();
+  renderAll();
+  showToast('Contact removed');
+}
+
+// ─── EXPORT ──────────────────────────────────────────────────────────────────
+function exportJSON() {
+  // Build CSV
+  let csv = 'Category,Name,Phone,Email,Address,Notes\n';
+  const sorted = [...contacts].sort((a,b) => a.category.localeCompare(b.category));
+  for (const c of sorted) {
+    const row = [c.category, c.name, c.phone, c.email, c.address, c.notes]
+      .map(v => `"${(v||'').replace(/"/g,'""')}"`).join(',');
+    csv += row + '\n';
+  }
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'we_have_a_guy_contacts.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Exported as CSV ↓');
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ─── KEYBOARD ────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closeConfirm(); }
+  if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
+});
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+renderAll();
+</script>
+</body>
+</html>
