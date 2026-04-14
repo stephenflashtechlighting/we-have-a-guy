@@ -790,8 +790,8 @@ function renderCard(c) {
   return `
     <div class="contact-card">
       <div class="card-actions">
-        <button class="btn-icon" onclick="openModal(${c.id})" title="Edit">✏️</button>
-        <button class="btn-icon del" onclick="askDelete(${c.id})" title="Delete">🗑</button>
+        <button class="btn-icon" onclick="openModal(${JSON.stringify(c.id)})" title="Edit">✏️</button>
+        <button class="btn-icon del" onclick="askDelete(${JSON.stringify(c.id)})" title="Delete">🗑</button>
       </div>
       <div class="card-name">${c.name}</div>
       ${phone}${email}${addr}${notes}
@@ -826,7 +826,7 @@ function handleCategoryChange() {
 function openModal(id) {
   editingId = id != null ? id : null;
   document.getElementById('modalTitle').textContent = id != null ? 'Edit Contact' : 'Add Contact';
-  const c = id != null ? contacts.find(x => x.id === id) : null;
+  const c = id != null ? contacts.find(x => x.id == id) : null;
   populateCategorySelect(c ? c.category : '');
   document.getElementById('f_name').value    = c ? c.name    : '';
   document.getElementById('f_phone').value   = c ? c.phone   : '';
@@ -892,7 +892,7 @@ async function saveContact() {
 // ─── DELETE ──────────────────────────────────────────────────────────────────
 function askDelete(id) {
   deletingId = id;
-  const c = contacts.find(x => x.id === id);
+  const c = contacts.find(x => x.id == id);
   document.getElementById('confirmText').textContent = `Remove "${c.name}" from the directory?`;
   document.getElementById('confirmOverlay').classList.add('open');
 }
