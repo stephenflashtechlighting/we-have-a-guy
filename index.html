@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>We Have A Guy 📋</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="We Have A Guy">
+<meta name="theme-color" content="#1a1610">
+<title>We Have A Guy</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -14,11 +20,12 @@
     --gold: #c8973a;
     --gold-light: #e8c46a;
     --rust: #b85c38;
-    --sage: #6b7c5c;
     --card-bg: #ffffff;
     --border: #ddd5c4;
     --shadow: rgba(92,61,46,0.12);
     --tag-bg: #f0e8d8;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,133 +35,130 @@
     background: var(--cream);
     color: var(--ink);
     min-height: 100vh;
+    min-height: -webkit-fill-available;
   }
 
   /* ─── HEADER ─── */
   header {
     background: var(--ink);
-    padding: 28px 32px 22px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
+    padding: calc(16px + var(--safe-top)) 20px 14px;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.35);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
   }
 
   .header-left h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 2rem;
+    font-size: 1.6rem;
     color: var(--gold-light);
-    letter-spacing: -0.02em;
     line-height: 1;
   }
 
   .header-left p {
     color: #a89880;
-    font-size: 0.82rem;
+    font-size: 0.72rem;
     font-weight: 300;
-    margin-top: 4px;
-    letter-spacing: 0.05em;
+    margin-top: 3px;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
-  .header-right {
+  .header-actions { display: flex; gap: 8px; align-items: center; }
+
+  .sync-indicator {
+    font-size: 0.72rem;
+    color: #7a6a58;
     display: flex;
-    gap: 10px;
     align-items: center;
-    flex-wrap: wrap;
+    gap: 4px;
   }
+
+  .sync-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #7a6a58;
+    transition: background 0.3s;
+  }
+
+  .sync-dot.syncing { background: var(--gold); animation: pulse 1s infinite; }
+  .sync-dot.ok      { background: #6db56d; }
+  .sync-dot.error   { background: #e05a40; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  .btn-add {
+    background: var(--gold);
+    color: var(--ink);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: background 0.18s;
+    white-space: nowrap;
+  }
+
+  .btn-add:hover { background: var(--gold-light); }
 
   .search-wrap {
     position: relative;
   }
 
   .search-wrap input {
+    width: 100%;
     background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(200,151,58,0.35);
+    border: 1px solid rgba(200,151,58,0.3);
     color: #f5f0e8;
-    padding: 9px 16px 9px 38px;
-    border-radius: 6px;
-    font-size: 0.88rem;
+    padding: 9px 16px 9px 36px;
+    border-radius: 8px;
+    font-size: 0.9rem;
     font-family: 'Source Sans 3', sans-serif;
-    width: 220px;
-    transition: border-color 0.2s, background 0.2s;
     outline: none;
+    transition: border-color 0.2s;
   }
 
-  .search-wrap input::placeholder { color: #7a6a58; }
-  .search-wrap input:focus {
-    border-color: var(--gold);
-    background: rgba(255,255,255,0.12);
-  }
+  .search-wrap input::placeholder { color: #6a5a48; }
+  .search-wrap input:focus { border-color: var(--gold); }
 
   .search-icon {
     position: absolute;
     left: 10px;
     top: 50%;
     transform: translateY(-50%);
-    color: #7a6a58;
-    font-size: 14px;
+    color: #6a5a48;
+    font-size: 13px;
     pointer-events: none;
   }
 
-  .btn-add {
-    background: var(--gold);
-    color: var(--ink);
-    border: none;
-    padding: 9px 18px;
-    border-radius: 6px;
-    font-family: 'Source Sans 3', sans-serif;
-    font-weight: 600;
-    font-size: 0.88rem;
-    cursor: pointer;
-    transition: background 0.18s, transform 0.1s;
-    white-space: nowrap;
-  }
-
-  .btn-add:hover { background: var(--gold-light); transform: translateY(-1px); }
-  .btn-add:active { transform: translateY(0); }
-
-  .btn-export {
-    background: transparent;
-    color: #a89880;
-    border: 1px solid rgba(200,151,58,0.3);
-    padding: 9px 14px;
-    border-radius: 6px;
-    font-family: 'Source Sans 3', sans-serif;
-    font-size: 0.82rem;
-    cursor: pointer;
-    transition: all 0.18s;
-  }
-
-  .btn-export:hover { color: var(--gold-light); border-color: var(--gold); }
-
-  /* ─── CATEGORY FILTER BAR ─── */
+  /* ─── FILTER BAR ─── */
   .filter-bar {
-    padding: 14px 32px;
     background: var(--warm-white);
     border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
     display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+    gap: 7px;
     align-items: center;
   }
 
-  .filter-label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #8a7a6a;
-    font-weight: 600;
-    margin-right: 4px;
-  }
+  .filter-bar::-webkit-scrollbar { display: none; }
 
   .filter-chip {
-    padding: 5px 12px;
+    display: inline-block;
+    padding: 5px 13px;
     border-radius: 20px;
     border: 1px solid var(--border);
     background: white;
@@ -163,52 +167,74 @@
     transition: all 0.15s;
     font-family: 'Source Sans 3', sans-serif;
     color: #5a4a3a;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
-  .filter-chip:hover { border-color: var(--gold); color: var(--brown); }
+  .filter-chip:hover { border-color: var(--gold); }
   .filter-chip.active { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 600; }
 
-  /* ─── MAIN CONTENT ─── */
+  /* ─── MAIN ─── */
   main {
-    max-width: 1100px;
+    padding: 16px 16px calc(24px + var(--safe-bottom));
+    max-width: 900px;
     margin: 0 auto;
-    padding: 28px 24px 60px;
   }
 
   .stats-row {
     display: flex;
-    gap: 10px;
-    margin-bottom: 24px;
-    font-size: 0.82rem;
+    gap: 8px;
+    margin-bottom: 18px;
+    font-size: 0.78rem;
     color: #8a7a6a;
+    flex-wrap: wrap;
   }
 
   .stat-pill {
     background: white;
     border: 1px solid var(--border);
     border-radius: 20px;
-    padding: 4px 12px;
+    padding: 3px 10px;
   }
 
   .stat-pill strong { color: var(--brown); }
 
-  /* ─── CATEGORY SECTION ─── */
-  .category-section {
-    margin-bottom: 32px;
+  /* ─── LOADING ─── */
+  .loading-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    gap: 16px;
+    color: #8a7a6a;
   }
+
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── CATEGORY SECTION ─── */
+  .category-section { margin-bottom: 24px; }
 
   .category-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
+    gap: 10px;
+    margin-bottom: 10px;
     cursor: pointer;
     user-select: none;
   }
 
   .category-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     color: var(--brown);
     font-weight: 700;
   }
@@ -217,89 +243,64 @@
     background: var(--tag-bg);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 2px 9px;
-    font-size: 0.75rem;
+    padding: 2px 8px;
+    font-size: 0.72rem;
     color: #7a6a58;
     font-weight: 600;
   }
 
-  .category-line {
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  .collapse-icon {
-    color: #a89880;
-    font-size: 0.75rem;
-    transition: transform 0.2s;
-  }
-
+  .category-line { flex: 1; height: 1px; background: var(--border); }
+  .collapse-icon { color: #a89880; font-size: 0.7rem; transition: transform 0.2s; }
   .collapsed .collapse-icon { transform: rotate(-90deg); }
 
+  /* ─── CARDS ─── */
   .cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
   }
 
   .cards-grid.hidden { display: none; }
 
-  /* ─── CONTACT CARD ─── */
   .contact-card {
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 16px 18px;
-    transition: box-shadow 0.18s, transform 0.15s;
+    padding: 14px 16px;
     position: relative;
+    transition: box-shadow 0.18s, transform 0.15s;
   }
 
-  .contact-card:hover {
-    box-shadow: 0 4px 18px var(--shadow);
-    transform: translateY(-2px);
-  }
+  .contact-card:hover { box-shadow: 0 4px 16px var(--shadow); transform: translateY(-1px); }
 
   .card-name {
     font-weight: 600;
-    font-size: 0.97rem;
+    font-size: 0.95rem;
     color: var(--ink);
-    margin-bottom: 6px;
-    padding-right: 48px;
+    margin-bottom: 5px;
+    padding-right: 52px;
     line-height: 1.35;
   }
 
   .card-detail {
     display: flex;
     align-items: flex-start;
-    gap: 7px;
-    font-size: 0.82rem;
+    gap: 6px;
+    font-size: 0.8rem;
     color: #6a5a4a;
-    margin-top: 4px;
+    margin-top: 3px;
     line-height: 1.4;
   }
 
-  .card-detail .icon {
-    width: 14px;
-    flex-shrink: 0;
-    margin-top: 1px;
-    color: var(--gold);
-  }
-
-  .card-detail a {
-    color: var(--rust);
-    text-decoration: none;
-  }
-
+  .card-detail .icon { width: 13px; flex-shrink: 0; margin-top: 1px; color: var(--gold); }
+  .card-detail a { color: var(--rust); text-decoration: none; }
   .card-detail a:hover { text-decoration: underline; }
 
-  .card-phone { font-family: 'Source Sans 3', sans-serif; }
-
   .card-notes {
-    margin-top: 8px;
-    padding-top: 8px;
+    margin-top: 7px;
+    padding-top: 7px;
     border-top: 1px dashed var(--border);
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     color: #8a7a6a;
     font-style: italic;
     line-height: 1.45;
@@ -307,27 +308,22 @@
 
   .card-actions {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 10px;
+    right: 10px;
     display: flex;
     gap: 4px;
-    opacity: 0;
-    transition: opacity 0.15s;
   }
-
-  .contact-card:hover .card-actions { opacity: 1; }
 
   .btn-icon {
     background: none;
     border: 1px solid var(--border);
-    width: 28px;
-    height: 28px;
+    width: 26px; height: 26px;
     border-radius: 5px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: 11px;
     transition: all 0.15s;
     color: #7a6a58;
   }
@@ -335,26 +331,37 @@
   .btn-icon:hover { border-color: var(--gold); color: var(--brown); background: var(--tag-bg); }
   .btn-icon.del:hover { border-color: #e05a40; color: #e05a40; background: #fff5f3; }
 
-  /* ─── EMPTY STATE ─── */
+  /* ─── EMPTY ─── */
   .empty-state {
     text-align: center;
     padding: 60px 20px;
     color: #a89880;
   }
 
-  .empty-state .big-icon { font-size: 3rem; margin-bottom: 12px; }
-  .empty-state p { font-size: 0.95rem; }
+  .empty-state .big-icon { font-size: 2.5rem; margin-bottom: 10px; }
+
+  /* ─── OFFLINE BANNER ─── */
+  .offline-banner {
+    background: #c04030;
+    color: white;
+    text-align: center;
+    padding: 6px 16px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    display: none;
+  }
+
+  .offline-banner.show { display: block; }
 
   /* ─── MODAL ─── */
   .modal-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(26,22,16,0.65);
+    background: rgba(26,22,16,0.7);
     z-index: 200;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
-    padding: 20px;
     backdrop-filter: blur(3px);
   }
 
@@ -362,20 +369,29 @@
 
   .modal {
     background: var(--warm-white);
-    border-radius: 12px;
+    border-radius: 16px 16px 0 0;
     width: 100%;
-    max-width: 500px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-    animation: modalIn 0.22s ease;
+    max-width: 560px;
+    max-height: 92vh;
+    overflow-y: auto;
+    animation: slideUp 0.25s ease;
+    padding-bottom: var(--safe-bottom);
   }
 
-  @keyframes modalIn {
-    from { opacity: 0; transform: translateY(20px) scale(0.97); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  .modal-handle {
+    width: 36px; height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 10px auto 0;
   }
 
   .modal-header {
-    padding: 20px 24px 16px;
+    padding: 14px 20px 12px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -384,43 +400,36 @@
 
   .modal-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     color: var(--brown);
   }
 
   .btn-close {
     background: none;
     border: none;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     cursor: pointer;
     color: #a89880;
     padding: 4px;
-    transition: color 0.15s;
   }
 
-  .btn-close:hover { color: var(--ink); }
-
   .modal-body {
-    padding: 20px 24px;
+    padding: 16px 20px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
   }
 
   .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 10px;
   }
 
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
 
   .form-group label {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.07em;
     color: #8a7a6a;
@@ -431,69 +440,63 @@
   .form-group textarea,
   .form-group select {
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 9px 12px;
+    border-radius: 8px;
+    padding: 10px 12px;
     font-family: 'Source Sans 3', sans-serif;
     font-size: 0.9rem;
     color: var(--ink);
     background: white;
-    transition: border-color 0.15s;
     outline: none;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
   }
 
   .form-group input:focus,
   .form-group textarea:focus,
   .form-group select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(200,151,58,0.12); }
-
   .form-group textarea { resize: vertical; min-height: 70px; }
 
-  .new-category-row {
-    display: none;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .new-category-row.visible { display: flex; }
+  .new-category-row { display: none; }
+  .new-category-row.visible { display: flex; gap: 8px; }
   .new-category-row input { flex: 1; }
 
   .modal-footer {
-    padding: 14px 24px 20px;
+    padding: 12px 20px 16px;
     display: flex;
     gap: 10px;
-    justify-content: flex-end;
     border-top: 1px solid var(--border);
   }
 
   .btn-cancel {
+    flex: 1;
     background: none;
     border: 1px solid var(--border);
-    padding: 9px 18px;
-    border-radius: 6px;
+    padding: 11px;
+    border-radius: 8px;
     font-family: 'Source Sans 3', sans-serif;
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     cursor: pointer;
     color: #6a5a4a;
-    transition: all 0.15s;
   }
 
-  .btn-cancel:hover { background: var(--tag-bg); }
-
   .btn-save {
+    flex: 2;
     background: var(--gold);
     color: var(--ink);
     border: none;
-    padding: 9px 22px;
-    border-radius: 6px;
+    padding: 11px;
+    border-radius: 8px;
     font-family: 'Source Sans 3', sans-serif;
     font-weight: 600;
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: background 0.18s;
   }
 
   .btn-save:hover { background: var(--gold-light); }
+  .btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
 
-  /* ─── CONFIRM DIALOG ─── */
+  /* ─── CONFIRM ─── */
   .confirm-overlay {
     display: none;
     position: fixed;
@@ -509,24 +512,22 @@
 
   .confirm-box {
     background: white;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 24px;
-    max-width: 340px;
+    max-width: 320px;
     width: 100%;
     text-align: center;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
   }
 
   .confirm-box h3 { font-family: 'Playfair Display', serif; color: var(--brown); margin-bottom: 8px; }
-  .confirm-box p { font-size: 0.88rem; color: #6a5a4a; margin-bottom: 18px; }
-  .confirm-btns { display: flex; gap: 10px; justify-content: center; }
-  .btn-confirm-del { background: #e05a40; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; font-family: 'Source Sans 3', sans-serif; font-weight: 600; }
-  .btn-confirm-del:hover { background: #c04030; }
+  .confirm-box p  { font-size: 0.85rem; color: #6a5a4a; margin-bottom: 18px; line-height: 1.5; }
+  .confirm-btns   { display: flex; gap: 10px; }
+  .btn-confirm-del { flex: 1; background: #e05a40; color: white; border: none; padding: 11px; border-radius: 8px; cursor: pointer; font-family: 'Source Sans 3', sans-serif; font-weight: 600; font-size: 0.9rem; }
 
   /* ─── TOAST ─── */
   .toast {
     position: fixed;
-    bottom: 24px;
+    bottom: calc(20px + var(--safe-bottom));
     left: 50%;
     transform: translateX(-50%) translateY(60px);
     background: var(--ink);
@@ -543,42 +544,57 @@
 
   .toast.show { transform: translateX(-50%) translateY(0); }
 
-  @media (max-width: 600px) {
-    header { padding: 16px; }
-    .header-left h1 { font-size: 1.5rem; }
-    main { padding: 16px; }
-    .filter-bar { padding: 10px 16px; }
-    .form-row { grid-template-columns: 1fr; }
-    .search-wrap input { width: 160px; }
+  @media (min-width: 600px) {
+    .modal { border-radius: 12px; margin: 20px; max-height: 85vh; }
+    .modal-overlay { align-items: center; }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
   }
 </style>
 </head>
 <body>
 
+<!-- !! PASTE YOUR APPS SCRIPT URL BELOW !! -->
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbzDCJSgvtuYKy3nYQDNHcPWNFNl_A0fMT72B-thI-1Bi8gvCrVfDwxUOSr1ktFMfv2dgw/exec";
+</script>
+
+<div class="offline-banner" id="offlineBanner">⚠️ You're offline — showing last loaded contacts</div>
+
 <header>
-  <div class="header-left">
-    <h1>📋 We Have A Guy</h1>
-    <p>The family contact directory</p>
-  </div>
-  <div class="header-right">
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="searchInput" placeholder="Search names, notes…" oninput="renderAll()">
+  <div class="header-top">
+    <div class="header-left">
+      <h1>📋 We Have A Guy</h1>
+      <p>Gordon family directory</p>
     </div>
-    <button class="btn-export" onclick="exportJSON()" title="Export data">⬇ Export</button>
-    <button class="btn-add" onclick="openModal()">＋ Add Contact</button>
+    <div class="header-actions">
+      <div class="sync-indicator">
+        <div class="sync-dot" id="syncDot"></div>
+        <span id="syncLabel"></span>
+      </div>
+      <button class="btn-add" onclick="openModal()">＋ Add</button>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="search" id="searchInput" placeholder="Search contacts…" oninput="renderAll()">
   </div>
 </header>
 
-<div class="filter-bar">
-  <span class="filter-label">Filter:</span>
+<div class="filter-bar" id="filterBar">
   <button class="filter-chip active" onclick="setFilter('All', this)">All</button>
-  <div id="filterChips"></div>
 </div>
 
 <main>
   <div class="stats-row" id="statsRow"></div>
-  <div id="directory"></div>
+  <div id="directory">
+    <div class="loading-screen">
+      <div class="spinner"></div>
+      <span>Loading contacts…</span>
+    </div>
+  </div>
   <div class="empty-state" id="emptyState" style="display:none">
     <div class="big-icon">🔎</div>
     <p>No contacts match your search.</p>
@@ -588,16 +604,15 @@
 <!-- Add/Edit Modal -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
   <div class="modal">
+    <div class="modal-handle"></div>
     <div class="modal-header">
-      <span class="modal-title" id="modalTitle">Add New Contact</span>
+      <span class="modal-title" id="modalTitle">Add Contact</span>
       <button class="btn-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group" style="grid-column:1/-1">
-          <label>Name *</label>
-          <input type="text" id="f_name" placeholder="Full name or business name">
-        </div>
+      <div class="form-group">
+        <label>Name *</label>
+        <input type="text" id="f_name" placeholder="Full name or business">
       </div>
       <div class="form-group">
         <label>Category *</label>
@@ -624,12 +639,12 @@
       </div>
       <div class="form-group">
         <label>Notes</label>
-        <textarea id="f_notes" placeholder="Pricing, tips, recommendations…"></textarea>
+        <textarea id="f_notes" placeholder="Pricing, tips, details…"></textarea>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-save" onclick="saveContact()">Save Contact</button>
+      <button class="btn-save" id="btnSave" onclick="saveContact()">Save Contact</button>
     </div>
   </div>
 </div>
@@ -638,7 +653,7 @@
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <h3>Remove Contact?</h3>
-    <p id="confirmText">Are you sure you want to remove this contact?</p>
+    <p id="confirmText"></p>
     <div class="confirm-btns">
       <button class="btn-cancel" onclick="closeConfirm()">Keep</button>
       <button class="btn-confirm-del" onclick="confirmDelete()">Remove</button>
@@ -649,73 +664,68 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── DATA ───────────────────────────────────────────────────────────────────
-let contacts = JSON.parse(localStorage.getItem('whag_contacts') || 'null') || [
-  { id:1,  category:"AC",                        name:"Taylor Teebe",                              phone:"504-390-3333",           email:"",                                   address:"",                                      notes:"" },
-  { id:2,  category:"Alterations/Tailor",         name:"Van's",                                     phone:"",                      email:"",                                   address:"215 N Carrollton Ave, New Orleans, LA 70119", notes:"" },
-  { id:3,  category:"Alterations/Tailor",         name:"All About Eve",                             phone:"504-249-5974",           email:"",                                   address:"4401 Veterans",                         notes:"" },
-  { id:4,  category:"Appliance Repair",           name:"Eduardo",                                   phone:"504-710-3300",           email:"",                                   address:"",                                      notes:"" },
-  { id:5,  category:"Beekeeper",                  name:"Jason",                                     phone:"+1 (504) 858-7258",     email:"",                                   address:"",                                      notes:"" },
-  { id:6,  category:"Brick Layers/Masonry",       name:"Tracy Deruise",                             phone:"504-616-3531",           email:"",                                   address:"",                                      notes:"" },
-  { id:7,  category:"Brick Layers/Masonry",       name:"Ronnie McIntyre",                           phone:"504-913-8008",           email:"",                                   address:"",                                      notes:"" },
-  { id:8,  category:"Brick Layers/Masonry",       name:"Darren Green",                              phone:"504-319-5950",           email:"",                                   address:"",                                      notes:"" },
-  { id:9,  category:"Brick Layers/Masonry",       name:"Bernard Smutten",                           phone:"504-235-4240",           email:"",                                   address:"",                                      notes:"" },
-  { id:10, category:"Car Detail",                 name:"Sherrod",                                   phone:"757-338-8755",           email:"",                                   address:"",                                      notes:"" },
-  { id:11, category:"Car Repair",                 name:"Francisco's Auto Motor Repair",             phone:"504-756-7761",           email:"",                                   address:"4712 Trenton St, Metairie, LA 70006",   notes:"" },
-  { id:12, category:"Carpet Cleaning",            name:"Marty Bordelon (Pyramid Cleaning)",         phone:"504-469-5025",           email:"",                                   address:"",                                      notes:"" },
-  { id:13, category:"Carpet Stretching",          name:"Larry Decures",                             phone:"504-905-9865",           email:"",                                   address:"",                                      notes:"" },
-  { id:14, category:"Cement/Concrete",            name:"Harrison Concrete",                         phone:"985-788-1166",           email:"",                                   address:"",                                      notes:"Leggari Products for reseal" },
-  { id:15, category:"Debris Removal",             name:"Christian Taylor (The Debris Guy)",         phone:"504-301-5052",           email:"Christian@TheDebrisGuy.com",         address:"",                                      notes:"Crawl space, gutters, vegetation removal" },
-  { id:16, category:"Dentist/Oral Surgeon",       name:"Dr. Brian LeBon",                           phone:"",                      email:"",                                   address:"",                                      notes:"" },
-  { id:17, category:"Dentist/Oral Surgeon",       name:"Dr. Jackson (Oral Surgeon)",                phone:"504-455-7161",           email:"",                                   address:"",                                      notes:"" },
-  { id:18, category:"DJ",                         name:"Wayne Trepagnier",                          phone:"504-610-5987",           email:"blueprintstudioneworleans@gmail.com", address:"",                                      notes:"$350" },
-  { id:19, category:"Dozer Work",                 name:"Jessie",                                    phone:"985-231-8087",           email:"",                                   address:"",                                      notes:"" },
-  { id:20, category:"Electrician",                name:"John Grilot",                               phone:"504-415-5183",           email:"",                                   address:"",                                      notes:"" },
-  { id:21, category:"Firewood",                   name:"Mike",                                      phone:"985-351-7709",           email:"",                                   address:"",                                      notes:"" },
-  { id:22, category:"Fortified Roof Evaluator",   name:"Mark Orgeron (21st Century Home Inspections)", phone:"504-494-2418",        email:"nspctrone@gmail.com",                address:"",                                      notes:"" },
-  { id:23, category:"Gutters",                    name:"Alpha Gutters",                             phone:"504-343-2401",           email:"",                                   address:"",                                      notes:"" },
-  { id:24, category:"Handyman",                   name:"Larry Laughlin (Laughlin Handyman Service)",phone:"504-460-6581",           email:"Lawrencelaughlin@gmail.com",          address:"",                                      notes:"" },
-  { id:25, category:"Handyman/Lawn/Haul",         name:"Breedlove Property Services (EJ)",          phone:"+1 (504) 450-9311",     email:"",                                   address:"",                                      notes:"" },
-  { id:26, category:"Home Cleaning",              name:"JBO Cleaning Services",                     phone:"504-451-3077",           email:"JBOcleaningservices@gmail.com",       address:"",                                      notes:"" },
-  { id:27, category:"Home Cleaning",              name:"Ingrid Cleaning Solution (Ingrid Sorto)",   phone:"504-249-0249",           email:"",                                   address:"",                                      notes:"" },
-  { id:28, category:"Home Cleaning",              name:"Katty Cleaning",                            phone:"",                      email:"",                                   address:"",                                      notes:"" },
-  { id:29, category:"House Painting",             name:"Alejandro",                                 phone:"+1 (504) 662-6264",     email:"",                                   address:"",                                      notes:"" },
-  { id:30, category:"Painter",                    name:"Mark Yenchko",                              phone:"713-628-4464",           email:"",                                   address:"",                                      notes:"Stephen has a painter too" },
-  { id:31, category:"Pine Mulch",                 name:"Gomez",                                     phone:"985-264-3567",           email:"",                                   address:"",                                      notes:"" },
-  { id:32, category:"Plumber",                    name:"Monty",                                     phone:"",                      email:"",                                   address:"",                                      notes:"" },
-  { id:33, category:"Plumber",                    name:"Casey Sutton",                              phone:"504-495-3333",           email:"",                                   address:"",                                      notes:"" },
-  { id:34, category:"Plumber",                    name:"Pipe Boss Plumbing (Derrick)",               phone:"504-877-2726",           email:"",                                   address:"",                                      notes:"" },
-  { id:35, category:"Power Washing",              name:"Hydromax (Dave Fullmer)",                   phone:"504-463-4185",           email:"",                                   address:"",                                      notes:"" },
-  { id:36, category:"Roofing",                    name:"Chris Pfeffer",                             phone:"504-251-4979 / 504-473-6822", email:"",                            address:"",                                      notes:"" },
-  { id:37, category:"Roofing",                    name:"David Morel",                               phone:"504-417-8276",           email:"",                                   address:"",                                      notes:"" },
-  { id:38, category:"Sheetrock",                  name:"Mike Calico",                               phone:"504-616-6826",           email:"",                                   address:"",                                      notes:"" },
-  { id:39, category:"Tree Trim/Firewood",         name:"Daniel Benoit",                             phone:"504-491-5304",           email:"",                                   address:"",                                      notes:"" },
-  { id:40, category:"Tree Trim/Firewood",         name:"David Folse",                               phone:"504-274-6963",           email:"",                                   address:"",                                      notes:"" },
-  { id:41, category:"Door Refinisher",            name:"Rachel Osborn (Knot & Wood)",               phone:"504-450-6680",           email:"rachel@knotandwood.co",              address:"",                                      notes:"" },
-  { id:42, category:"Washer/Dryer Buy & Sell",    name:"Tony Centanni",                             phone:"505-430-0141",           email:"",                                   address:"814 Green Acres Rd, Metairie, LA 70003", notes:"" },
-  { id:43, category:"Wedding Assistant",          name:"Anna",                                      phone:"+1 (985) 974-9816",     email:"",                                   address:"",                                      notes:"" },
-];
-
-let nextId = Math.max(...contacts.map(c => c.id)) + 1;
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let contacts = [];
 let activeFilter = 'All';
 let editingId = null;
 let deletingId = null;
 
-function save() {
-  localStorage.setItem('whag_contacts', JSON.stringify(contacts));
+// ─── SYNC ────────────────────────────────────────────────────────────────────
+function setSyncState(state, label) {
+  const dot = document.getElementById('syncDot');
+  const lbl = document.getElementById('syncLabel');
+  dot.className = 'sync-dot ' + state;
+  lbl.textContent = label;
 }
 
-// ─── CATEGORIES ─────────────────────────────────────────────────────────────
+async function apiCall(params) {
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data;
+}
+
+async function loadContacts() {
+  setSyncState('syncing', 'Loading…');
+  try {
+    const data = await apiCall({ action: 'getAll' });
+    contacts = data.contacts;
+    // Cache locally for offline
+    localStorage.setItem('whag_cache', JSON.stringify(contacts));
+    setSyncState('ok', 'Synced');
+    renderAll();
+  } catch (e) {
+    // Try cache
+    const cached = localStorage.getItem('whag_cache');
+    if (cached) {
+      contacts = JSON.parse(cached);
+      setSyncState('error', 'Offline');
+      document.getElementById('offlineBanner').classList.add('show');
+      renderAll();
+    } else {
+      setSyncState('error', 'Error');
+      document.getElementById('directory').innerHTML = `
+        <div class="empty-state">
+          <div class="big-icon">⚠️</div>
+          <p>Couldn't load contacts.<br>Check your connection and refresh.</p>
+        </div>`;
+    }
+  }
+}
+
+// ─── CATEGORIES ──────────────────────────────────────────────────────────────
 function getCategories() {
   return [...new Set(contacts.map(c => c.category))].sort();
 }
 
-function buildFilterChips() {
+function buildFilterBar() {
   const cats = getCategories();
-  const wrap = document.getElementById('filterChips');
-  wrap.innerHTML = cats.map(c =>
-    `<button class="filter-chip${activeFilter===c?' active':''}" onclick="setFilter('${c.replace(/'/g,"\\'")}', this)">${c}</button>`
-  ).join('');
+  const bar = document.getElementById('filterBar');
+  bar.innerHTML = `<button class="filter-chip${activeFilter==='All'?' active':''}" onclick="setFilter('All',this)">All</button>` +
+    cats.map(c => `<button class="filter-chip${activeFilter===c?' active':''}" onclick="setFilter(${JSON.stringify(c)},this)">${c}</button>`).join('');
 }
 
 function setFilter(cat, el) {
@@ -728,60 +738,51 @@ function setFilter(cat, el) {
 // ─── RENDER ──────────────────────────────────────────────────────────────────
 function renderAll() {
   const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  const dir = document.getElementById('directory');
-  const empty = document.getElementById('emptyState');
-  const stats = document.getElementById('statsRow');
-
-  buildFilterChips();
+  buildFilterBar();
 
   const cats = getCategories();
-  let totalShown = 0;
   let html = '';
+  let totalShown = 0;
 
   for (const cat of cats) {
     if (activeFilter !== 'All' && activeFilter !== cat) continue;
-
     let items = contacts.filter(c => c.category === cat);
-    if (q) {
-      items = items.filter(c =>
-        c.name.toLowerCase().includes(q) ||
-        c.phone.toLowerCase().includes(q) ||
-        c.email.toLowerCase().includes(q) ||
-        c.notes.toLowerCase().includes(q) ||
-        c.address.toLowerCase().includes(q)
-      );
-    }
+    if (q) items = items.filter(c =>
+      [c.name, c.phone, c.email, c.notes, c.address].some(v => v && v.toLowerCase().includes(q))
+    );
     if (!items.length) continue;
     totalShown += items.length;
 
     html += `
-      <div class="category-section" id="sec_${CSS.escape(cat)}">
-        <div class="category-header" onclick="toggleSection('${cat.replace(/'/g,"\\'")}')">
+      <div class="category-section" id="sec_${encodeId(cat)}">
+        <div class="category-header" onclick="toggleSection(${JSON.stringify(cat)})">
           <span class="category-title">${cat}</span>
           <span class="category-count">${items.length}</span>
           <span class="category-line"></span>
           <span class="collapse-icon">▼</span>
         </div>
-        <div class="cards-grid" id="grid_${CSS.escape(cat)}">
-          ${items.map(c => renderCard(c)).join('')}
+        <div class="cards-grid" id="grid_${encodeId(cat)}">
+          ${items.map(renderCard).join('')}
         </div>
       </div>`;
   }
 
-  dir.innerHTML = html;
-  empty.style.display = totalShown ? 'none' : 'block';
+  document.getElementById('directory').innerHTML = html || '';
+  document.getElementById('emptyState').style.display = (totalShown === 0 && contacts.length > 0) ? 'block' : 'none';
 
-  const total = contacts.length;
-  const catCount = getCategories().length;
+  const stats = document.getElementById('statsRow');
   stats.innerHTML = `
-    <span class="stat-pill"><strong>${total}</strong> contacts</span>
-    <span class="stat-pill"><strong>${catCount}</strong> categories</span>
-    ${q ? `<span class="stat-pill">Showing <strong>${totalShown}</strong> results</span>` : ''}
-  `;
+    <span class="stat-pill"><strong>${contacts.length}</strong> contacts</span>
+    <span class="stat-pill"><strong>${getCategories().length}</strong> categories</span>
+    ${q ? `<span class="stat-pill">Showing <strong>${totalShown}</strong></span>` : ''}`;
+}
+
+function encodeId(str) {
+  return str.replace(/[^a-zA-Z0-9]/g, '_');
 }
 
 function renderCard(c) {
-  const phone = c.phone ? `<div class="card-detail"><span class="icon">📞</span><span class="card-phone"><a href="tel:${c.phone}">${c.phone}</a></span></div>` : '';
+  const phone = c.phone ? `<div class="card-detail"><span class="icon">📞</span><a href="tel:${c.phone}">${c.phone}</a></div>` : '';
   const email = c.email ? `<div class="card-detail"><span class="icon">✉️</span><a href="mailto:${c.email}">${c.email}</a></div>` : '';
   const addr  = c.address ? `<div class="card-detail"><span class="icon">📍</span><span>${c.address}</span></div>` : '';
   const notes = c.notes ? `<div class="card-notes">💬 ${c.notes}</div>` : '';
@@ -798,8 +799,10 @@ function renderCard(c) {
 }
 
 function toggleSection(cat) {
-  const sec = document.getElementById('sec_' + CSS.escape(cat));
-  const grid = document.getElementById('grid_' + CSS.escape(cat));
+  const id = encodeId(cat);
+  const sec  = document.getElementById('sec_' + id);
+  const grid = document.getElementById('grid_' + id);
+  if (!sec) return;
   sec.classList.toggle('collapsed');
   grid.classList.toggle('hidden');
 }
@@ -821,12 +824,10 @@ function handleCategoryChange() {
 }
 
 function openModal(id) {
-  editingId = id || null;
-  document.getElementById('modalTitle').textContent = id ? 'Edit Contact' : 'Add New Contact';
-
-  const c = id ? contacts.find(x => x.id === id) : null;
+  editingId = id != null ? id : null;
+  document.getElementById('modalTitle').textContent = id != null ? 'Edit Contact' : 'Add Contact';
+  const c = id != null ? contacts.find(x => x.id === id) : null;
   populateCategorySelect(c ? c.category : '');
-
   document.getElementById('f_name').value    = c ? c.name    : '';
   document.getElementById('f_phone').value   = c ? c.phone   : '';
   document.getElementById('f_email').value   = c ? c.email   : '';
@@ -834,9 +835,9 @@ function openModal(id) {
   document.getElementById('f_notes').value   = c ? c.notes   : '';
   document.getElementById('f_newcat').value  = '';
   document.getElementById('newCatRow').classList.remove('visible');
-
+  document.getElementById('btnSave').disabled = false;
   document.getElementById('modalOverlay').classList.add('open');
-  document.getElementById('f_name').focus();
+  setTimeout(() => document.getElementById('f_name').focus(), 300);
 }
 
 function handleOverlayClick(e) {
@@ -848,15 +849,16 @@ function closeModal() {
   editingId = null;
 }
 
-function saveContact() {
+async function saveContact() {
   const name = document.getElementById('f_name').value.trim();
   let cat = document.getElementById('f_category').value;
   if (cat === '__new__') cat = document.getElementById('f_newcat').value.trim();
 
-  if (!name) { alert('Name is required.'); return; }
-  if (!cat) { alert('Category is required.'); return; }
+  if (!name) { showToast('Name is required'); return; }
+  if (!cat)  { showToast('Category is required'); return; }
 
-  const data = {
+  const contact = {
+    id: editingId,
     name, category: cat,
     phone:   document.getElementById('f_phone').value.trim(),
     email:   document.getElementById('f_email').value.trim(),
@@ -864,18 +866,27 @@ function saveContact() {
     notes:   document.getElementById('f_notes').value.trim(),
   };
 
-  if (editingId) {
-    const idx = contacts.findIndex(c => c.id === editingId);
-    contacts[idx] = { ...contacts[idx], ...data };
-    showToast('Contact updated ✓');
-  } else {
-    contacts.push({ id: nextId++, ...data });
-    showToast('Contact added ✓');
-  }
+  const btn = document.getElementById('btnSave');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  setSyncState('syncing', 'Saving…');
 
-  save();
-  closeModal();
-  renderAll();
+  try {
+    if (editingId != null) {
+      await apiCall({ action: 'update', contact });
+      showToast('Contact updated ✓');
+    } else {
+      await apiCall({ action: 'add', contact });
+      showToast('Contact added ✓');
+    }
+    closeModal();
+    await loadContacts();
+  } catch (e) {
+    showToast('Save failed — check connection');
+    setSyncState('error', 'Error');
+    btn.disabled = false;
+    btn.textContent = 'Save Contact';
+  }
 }
 
 // ─── DELETE ──────────────────────────────────────────────────────────────────
@@ -891,32 +902,17 @@ function closeConfirm() {
   deletingId = null;
 }
 
-function confirmDelete() {
-  contacts = contacts.filter(c => c.id !== deletingId);
-  save();
+async function confirmDelete() {
   closeConfirm();
-  renderAll();
-  showToast('Contact removed');
-}
-
-// ─── EXPORT ──────────────────────────────────────────────────────────────────
-function exportJSON() {
-  // Build CSV
-  let csv = 'Category,Name,Phone,Email,Address,Notes\n';
-  const sorted = [...contacts].sort((a,b) => a.category.localeCompare(b.category));
-  for (const c of sorted) {
-    const row = [c.category, c.name, c.phone, c.email, c.address, c.notes]
-      .map(v => `"${(v||'').replace(/"/g,'""')}"`).join(',');
-    csv += row + '\n';
+  setSyncState('syncing', 'Deleting…');
+  try {
+    await apiCall({ action: 'delete', id: deletingId });
+    showToast('Contact removed');
+    await loadContacts();
+  } catch (e) {
+    showToast('Delete failed — check connection');
+    setSyncState('error', 'Error');
   }
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'we_have_a_guy_contacts.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('Exported as CSV ↓');
 }
 
 // ─── TOAST ───────────────────────────────────────────────────────────────────
@@ -924,20 +920,25 @@ function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2400);
+  setTimeout(() => t.classList.remove('show'), 2500);
 }
 
 // ─── KEYBOARD ────────────────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeModal(); closeConfirm(); }
-  if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
-    e.preventDefault();
-    document.getElementById('searchInput').focus();
-  }
 });
 
+// ─── ONLINE/OFFLINE ──────────────────────────────────────────────────────────
+window.addEventListener('online',  () => { document.getElementById('offlineBanner').classList.remove('show'); loadContacts(); });
+window.addEventListener('offline', () => { document.getElementById('offlineBanner').classList.add('show'); setSyncState('error','Offline'); });
+
+// ─── SERVICE WORKER ──────────────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(console.error);
+}
+
 // ─── INIT ────────────────────────────────────────────────────────────────────
-renderAll();
+loadContacts();
 </script>
 </body>
 </html>
